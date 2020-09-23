@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reddittop.adapters.TopAdapter
+import com.example.reddittop.adapters.TopLoadStateAdapter
 import com.example.reddittop.databinding.ActivityMainBinding
 import com.example.reddittop.networking.RedditAPI
 import com.example.reddittop.viewModel.RedditViewModel
@@ -32,13 +33,21 @@ class MainActivity : AppCompatActivity() {
         // TODO: Add DI later. Just testing if API works
         topAdapter = TopAdapter()
         binding.list.layoutManager = LinearLayoutManager(this)
-        binding.list.adapter = topAdapter
+        binding.list.adapter = topAdapter.withLoadStateHeaderAndFooter(
+            header = TopLoadStateAdapter { topAdapter.retry() },
+            footer = TopLoadStateAdapter { topAdapter.retry() }
+        )
+
+        binding.pullToRefresh.setOnRefreshListener {
+            topAdapter.refresh()
+        }
 
         val factory = RedditViewModelFactory(RedditAPI())
         viewModel = ViewModelProvider(this, factory).get(RedditViewModel::class.java)
 
         lifecycleScope.launch {
             viewModel.topEntries.collectLatest { page ->
+                binding.pullToRefresh.isRefreshing = false
                 topAdapter.submitData(page)
             }
         }
