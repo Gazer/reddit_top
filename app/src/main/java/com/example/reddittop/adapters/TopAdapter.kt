@@ -1,8 +1,10 @@
-package com.example.reddittop
+package com.example.reddittop.adapters
 
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reddittop.databinding.ItemEntryBinding
 import com.example.reddittop.models.Children
@@ -10,9 +12,7 @@ import com.example.reddittop.models.RedditListing
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class TopAdapter: RecyclerView.Adapter<TopAdapter.ItemViewHolder>() {
-    var items = emptyList<Children>()
-
+class TopAdapter: PagingDataAdapter<Children, TopAdapter.ItemViewHolder>(ItemComparator) {
     inner class ItemViewHolder(private val binding: ItemEntryBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Children) {
             binding.userName = item.data.author
@@ -40,15 +40,19 @@ class TopAdapter: RecyclerView.Adapter<TopAdapter.ItemViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(items[position])
+        val item = getItem(position)
+        item?.let {
+            holder.bind(item)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return items.count()
-    }
+    object ItemComparator : DiffUtil.ItemCallback<Children>() {
+        override fun areItemsTheSame(oldItem: Children, newItem: Children): Boolean {
+            return oldItem.data.id == newItem.data.id
+        }
 
-    fun addItems(listing: RedditListing) {
-        items = listing.data.children
-        notifyDataSetChanged()
+        override fun areContentsTheSame(oldItem: Children, newItem: Children): Boolean {
+            return oldItem == newItem
+        }
     }
 }

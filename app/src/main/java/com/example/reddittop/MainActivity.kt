@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.reddittop.adapters.TopAdapter
 import com.example.reddittop.databinding.ActivityMainBinding
 import com.example.reddittop.networking.RedditAPI
 import com.example.reddittop.viewModel.RedditViewModel
 import com.example.reddittop.viewModel.RedditViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -29,18 +31,16 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: Add DI later. Just testing if API works
         topAdapter = TopAdapter()
-        binding.list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.list.layoutManager = LinearLayoutManager(this)
         binding.list.adapter = topAdapter
 
         val factory = RedditViewModelFactory(RedditAPI())
         viewModel = ViewModelProvider(this, factory).get(RedditViewModel::class.java)
 
-        viewModel.topEntries.observeForever {
-            topAdapter.addItems(it)
-        }
-
         lifecycleScope.launch {
-            viewModel.loadTop()
+            viewModel.topEntries.collectLatest { page ->
+                topAdapter.submitData(page)
+            }
         }
     }
 }
