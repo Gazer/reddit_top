@@ -45,15 +45,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupDrawer() {
-        val toggle = ActionBarDrawerToggle(
-            this,
-            binding.drawer,
-            binding.toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        binding.drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        if (binding.drawer != null) {
+            val toggle = ActionBarDrawerToggle(
+                this,
+                binding.drawer,
+                binding.toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+            )
+            binding.drawer?.addDrawerListener(toggle)
+            toggle.syncState()
+        }
     }
 
     private fun setupPageLoading() {
