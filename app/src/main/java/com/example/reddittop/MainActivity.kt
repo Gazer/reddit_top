@@ -3,12 +3,14 @@ package com.example.reddittop
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reddittop.adapters.TopAdapter
 import com.example.reddittop.adapters.TopLoadStateAdapter
 import com.example.reddittop.databinding.ActivityMainBinding
+import com.example.reddittop.models.Children
 import com.example.reddittop.viewModel.RedditViewModel
 import com.example.reddittop.viewModel.RedditViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +20,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: RedditViewModel
     private lateinit var topAdapter: TopAdapter
@@ -82,14 +84,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupObserver() {
-        // TODO: binding.pullToRefresh.isRefreshing = false
+        viewModel.currentItem.observe(this, {
+            binding.test.text = it.data.title
+            binding.drawer?.closeDrawers()
+        })
     }
 
     private fun initRecyclerView() {
-        topAdapter = TopAdapter()
+        topAdapter = TopAdapter(this)
         binding.list.layoutManager = LinearLayoutManager(this)
         binding.list.adapter = topAdapter.withLoadStateFooter(
             footer = TopLoadStateAdapter { topAdapter.retry() }
         )
+    }
+
+    override fun onItemClicked(item: Children) {
+        viewModel.showItem(item)
     }
 }

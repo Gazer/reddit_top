@@ -24,9 +24,11 @@
         <variable
             name="comments"
             type="java.lang.String" />
+
     </data>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12dp">

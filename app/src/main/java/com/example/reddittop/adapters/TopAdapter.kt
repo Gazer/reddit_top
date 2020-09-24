@@ -8,16 +8,25 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reddittop.databinding.ItemEntryBinding
 import com.example.reddittop.models.Children
-import com.example.reddittop.models.RedditListing
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class TopAdapter: PagingDataAdapter<Children, TopAdapter.ItemViewHolder>(ItemComparator) {
-    inner class ItemViewHolder(private val binding: ItemEntryBinding): RecyclerView.ViewHolder(binding.root) {
+class TopAdapter(private val itemClicked: ItemClicked) :
+    PagingDataAdapter<Children, TopAdapter.ItemViewHolder>(ItemComparator) {
+    interface ItemClicked {
+        fun onItemClicked(item: Children)
+    }
+
+    inner class ItemViewHolder(private val binding: ItemEntryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Children) {
+            binding.root.setOnClickListener {
+                itemClicked.onItemClicked(item)
+            }
             binding.userName = item.data.author
             binding.title = item.data.title
-            binding.comments = String.format(Locale.getDefault(), "%s comments", item.data.num_comments)
+            binding.comments =
+                String.format(Locale.getDefault(), "%s comments", item.data.num_comments)
 
             binding.timeAgo = DateUtils.getRelativeDateTimeString(
                 binding.timeAgoField.context,
