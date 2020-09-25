@@ -2,6 +2,7 @@ package com.example.reddittop.adapters
 
 import android.text.format.DateUtils
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -36,7 +37,13 @@ class TopAdapter(private val itemClicked: ItemClicked) :
                 0
             ).toString()
 
-            Picasso.get().load(item.data.thumbnail).into(binding.previewImage);
+            val image = item.getThumbnail()
+            if (image != null) {
+                Picasso.get().load(image).into(binding.previewImage);
+                binding.previewImage.visibility = View.VISIBLE
+            } else {
+                binding.previewImage.visibility = View.GONE
+            }
         }
     }
 

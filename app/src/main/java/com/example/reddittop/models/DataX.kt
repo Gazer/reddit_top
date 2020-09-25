@@ -20,7 +20,7 @@ data class DataX(
     val likes: Any,
     val link_flair_css_class: Any,
     val link_flair_text: Any,
-    val media: Any,
+    val media: Any?,
     val media_embed: MediaEmbed,
     val mod_reports: List<Any>,
     val name: String,
