@@ -16,6 +16,12 @@ Android App to read Top posts from Reedit.com
 - Dismiss All Button (remove all posts. Animations required)
 - Support split layout (left side: all posts / right side: detail post)
 
+## Screenshots
+
+<img src="/img/Img1.png?raw=true" width="300" /> <img src="/img/Img2.png?raw=true" width="300" />
+
+<img src="/img/Img3.png?raw=true" width="600" />
+
 ## Dependencies
 
 * 100% Kotlin
