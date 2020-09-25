@@ -85,7 +85,6 @@ class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
 
     private fun setupObserver() {
         viewModel.currentItem.observe(this, {
-            binding.test.text = it.data.title
             binding.drawer?.closeDrawers()
         })
     }
