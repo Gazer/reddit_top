@@ -9,7 +9,7 @@ interface TopEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(users: List<TopEntry>)
 
-    @Query("SELECT * FROM top_entries")
+    @Query("SELECT * FROM top_entries ORDER BY position ASC")
     fun pagingSource(): PagingSource<Int, TopEntry>
 
     @Delete

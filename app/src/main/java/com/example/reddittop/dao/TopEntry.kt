@@ -5,11 +5,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "top_entries")
 data class TopEntry(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    val position: Int,
     val id: String,
     val author: String,
     val title: String,
     val comments: Int,
     val created: Long,
-    val imageUrl: String?,
+    val imageUrl: String?
 )

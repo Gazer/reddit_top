@@ -46,6 +46,7 @@ class TopEntriesMediator(private val api: RedditAPI, private val database: AppDa
 
             val repos = apiResponse.data.children.map {
                 TopEntry(
+                    0,
                     it.data.id,
                     it.data.author,
                     it.data.title,
