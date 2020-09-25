@@ -52,6 +52,7 @@ class TopEntriesMediator(private val api: RedditAPI, private val database: AppDa
                     it.data.title,
                     it.data.num_comments,
                     it.data.created.toLong(),
+                    it.data.url,
                     it.getThumbnail()
                 )
             }

@@ -1,21 +1,23 @@
 package com.example.reddittop
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateUtils
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.reddittop.dao.TopEntry
 import com.example.reddittop.databinding.FragmentDetailsBinding
-import com.example.reddittop.models.Children
 import com.example.reddittop.viewModel.RedditViewModel
 import com.example.reddittop.viewModel.RedditViewModelFactory
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
@@ -41,7 +43,7 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentItem.observe(requireActivity(), {item ->
+        viewModel.currentItem.observe(requireActivity(), { item ->
             if (item == null) {
                 hideDetails()
             } else {
@@ -51,7 +53,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun hideDetails() {
-        binding.root.visibility = View.GONE
+        binding.container.visibility = View.GONE
     }
 
     private fun showDetails(item: TopEntry) {
@@ -76,6 +78,12 @@ class DetailsFragment : Fragment() {
             binding.previewImage.visibility = View.GONE
         }
 
-        binding.root.visibility = View.VISIBLE
+        binding.open.setOnClickListener {
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(item.url)
+            startActivity(i)
+        }
+
+        binding.container.visibility = View.VISIBLE
     }
 }

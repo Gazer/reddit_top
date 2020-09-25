@@ -12,5 +12,6 @@ data class TopEntry(
     val title: String,
     val comments: Int,
     val created: Long,
-    val imageUrl: String?
+    val url: String,
+    val imageUrl: String?,
 )
