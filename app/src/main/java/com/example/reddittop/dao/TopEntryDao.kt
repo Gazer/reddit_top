@@ -1,10 +1,7 @@
 package com.example.reddittop.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 
 @Dao
@@ -14,6 +11,9 @@ interface TopEntryDao {
 
     @Query("SELECT * FROM top_entries")
     fun pagingSource(): PagingSource<Int, TopEntry>
+
+    @Delete
+    fun delete(entry: TopEntry)
 
     @Query("DELETE FROM top_entries")
     fun clearAll(): Int

@@ -9,6 +9,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.reddittop.dao.AppDatabase
 import com.example.reddittop.dao.TopEntry
+import com.example.reddittop.networking.RedditAPI
+import com.example.reddittop.networking.TopEntriesMediator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class RedditViewModel(private val database: AppDatabase) : ViewModel() {
     private val _currentItem = MutableLiveData<TopEntry>()
@@ -25,12 +29,13 @@ class RedditViewModel(private val database: AppDatabase) : ViewModel() {
         if (item == _currentItem.value) {
             _currentItem.postValue(null)
         }
-//        val position = repository.removeItem(item)
-//        _itemRemoved.postValue(position)
-//        dataSource?.invalidate()
+        viewModelScope.launch(Dispatchers.IO) {
+            database.topEntriesDao().delete(item)
+        }
     }
 
-    val topEntries = Pager(PagingConfig(pageSize = 25)) {
+    val topEntries = Pager(PagingConfig(pageSize = 25),
+    remoteMediator = TopEntriesMediator(RedditAPI.invoke(), database)) {
         database.topEntriesDao().pagingSource()
     }.flow.cachedIn(viewModelScope)
 }
