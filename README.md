@@ -42,3 +42,4 @@ The app is not perfect and can be improved:
 * Image saving is a dirty hack, with time could be improved
 * There is a bug that if a fetch is canceled when the list is being created for first time the list do not start scrolled at the top.
 * Add tests :)
+* Code organization probable can be improved too. Some classes may be in the wrong package due lack of time
