@@ -16,12 +16,13 @@ import com.example.reddittop.databinding.FragmentListBinding
 import com.example.reddittop.viewModel.RedditViewModel
 import com.example.reddittop.viewModel.RedditViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ListFragment : Fragment(),TopAdapter.ItemClicked {
+class ListFragment : Fragment(), TopAdapter.ItemClicked {
     private lateinit var binding: FragmentListBinding
     private lateinit var viewModel: RedditViewModel
     private lateinit var topAdapter: TopAdapter

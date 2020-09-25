@@ -37,7 +37,7 @@ class RedditViewModel(private val database: AppDatabase) : ViewModel() {
     }
 
     fun dismissItem(item: TopEntry) {
-        if (item == _currentItem.value) {
+        if (item.id == _currentItem.value?.id) {
             _currentItem.postValue(null)
         }
         viewModelScope.launch(Dispatchers.IO) {

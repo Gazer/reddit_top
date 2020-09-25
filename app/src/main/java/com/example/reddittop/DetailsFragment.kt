@@ -84,6 +84,7 @@ class DetailsFragment : Fragment() {
             startActivity(i)
         }
 
+        binding.scrollable.scrollTo(0, 0)
         binding.container.visibility = View.VISIBLE
     }
 }
