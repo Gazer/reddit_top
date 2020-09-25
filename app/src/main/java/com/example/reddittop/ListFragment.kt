@@ -49,6 +49,13 @@ class ListFragment : Fragment(),TopAdapter.ItemClicked {
         setupPageLoading()
         setupPullToRefresh()
         setupObservers()
+        setupActions()
+    }
+
+    private fun setupActions() {
+        binding.dismissAll.setOnClickListener {
+            viewModel.dismissAll()
+        }
     }
 
     private fun setupObservers() {

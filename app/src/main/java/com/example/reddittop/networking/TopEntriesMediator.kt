@@ -27,26 +27,16 @@ class TopEntriesMediator(private val api: RedditAPI, private val database: AppDa
             }
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
-                if (remoteKeys == null) {
-                    return MediatorResult.Success(endOfPaginationReached = false)
-                    // The LoadType is PREPEND so some data was loaded before,
-                    // so we should have been able to get remote keys
-                    // If the remoteKeys are null, then we're an invalid state and we have a bug
-//                    throw InvalidObjectException("Remote key and the prevKey should not be null")
-                }
-                // If the previous key is null, then we can't request more data
-                val prevKey = remoteKeys.prevKey
-                if (prevKey == null) {
-                    return MediatorResult.Success(endOfPaginationReached = true)
-                }
-                remoteKeys.prevKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = false)
+
+                val prevKey = remoteKeys.prevKey ?: return MediatorResult.Success(
+                    endOfPaginationReached = true
+                )
+                prevKey
             }
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
-                if (remoteKeys == null || remoteKeys.nextKey == null) {
-                    throw InvalidObjectException("Remote key should not be null for $loadType")
-                }
-                remoteKeys.nextKey
+                remoteKeys?.nextKey
             }
 
         }

@@ -13,8 +13,8 @@ interface TopEntryDao {
     fun pagingSource(): PagingSource<Int, TopEntry>
 
     @Delete
-    fun delete(entry: TopEntry)
+    suspend fun delete(entry: TopEntry)
 
     @Query("DELETE FROM top_entries")
-    fun clearAll(): Int
+    suspend fun clearAll(): Int
 }

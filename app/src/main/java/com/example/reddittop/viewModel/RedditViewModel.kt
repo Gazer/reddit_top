@@ -21,6 +21,14 @@ class RedditViewModel(private val database: AppDatabase) : ViewModel() {
     private val _itemRemoved = MutableLiveData<Int>()
     val itemRemoved = _itemRemoved as LiveData<Int>
 
+    init {
+        // Cleanup database before start
+        viewModelScope.launch(Dispatchers.IO) {
+            database.remoteKeysDao().clearRemoteKeys()
+            database.topEntriesDao().clearAll()
+        }
+    }
+
     fun showItem(item: TopEntry) {
         _currentItem.postValue(item)
     }
@@ -34,8 +42,18 @@ class RedditViewModel(private val database: AppDatabase) : ViewModel() {
         }
     }
 
-    val topEntries = Pager(PagingConfig(pageSize = 25),
-    remoteMediator = TopEntriesMediator(RedditAPI.invoke(), database)) {
+    fun dismissAll() {
+        _currentItem.postValue(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            database.remoteKeysDao().clearRemoteKeys()
+            database.topEntriesDao().clearAll()
+        }
+    }
+
+    val topEntries = Pager(
+        PagingConfig(pageSize = 10),
+        remoteMediator = TopEntriesMediator(RedditAPI.invoke(), database)
+    ) {
         database.topEntriesDao().pagingSource()
     }.flow.cachedIn(viewModelScope)
 }
