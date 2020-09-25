@@ -21,10 +21,9 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: RedditViewModel
-    private lateinit var topAdapter: TopAdapter
 
     @Inject
     lateinit var factory: RedditViewModelFactory
@@ -39,11 +38,8 @@ class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
         }
 
         initUI()
-        initRecyclerView()
         setupViewModel()
         setupObserver()
-        setupPullToRefresh()
-        setupPageLoading()
         setupDrawer()
     }
 
@@ -61,23 +57,8 @@ class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
         }
     }
 
-    private fun setupPageLoading() {
-        lifecycleScope.launch {
-            viewModel.topEntries.collectLatest { page ->
-                binding.pullToRefresh.isRefreshing = false
-                topAdapter.submitData(page)
-            }
-        }
-    }
-
     private fun initUI() {
         binding.toolbar.title = getString(R.string.app_name)
-    }
-
-    private fun setupPullToRefresh() {
-        binding.pullToRefresh.setOnRefreshListener {
-            topAdapter.refresh()
-        }
     }
 
     private fun setupViewModel() {
@@ -88,24 +69,7 @@ class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
         viewModel.currentItem.observe(this, {
             binding.drawer?.closeDrawers()
         })
-        viewModel.itemRemoved.observe(this, {
-            topAdapter.notifyItemRemoved(it)
-        })
     }
 
-    private fun initRecyclerView() {
-        topAdapter = TopAdapter(this)
-        binding.list.layoutManager = LinearLayoutManager(this)
-        binding.list.adapter = topAdapter.withLoadStateFooter(
-            footer = TopLoadStateAdapter { topAdapter.retry() }
-        )
-    }
 
-    override fun onItemClicked(item: TopEntry) {
-        viewModel.showItem(item)
-    }
-
-    override fun onItemDismissed(item: TopEntry) {
-        viewModel.dismissItem(item)
-    }
 }
