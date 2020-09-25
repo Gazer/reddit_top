@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.example.reddittop.dao.TopEntry
 import com.example.reddittop.databinding.FragmentDetailsBinding
+import com.example.reddittop.models.Children
 import com.example.reddittop.viewModel.RedditViewModel
 import com.example.reddittop.viewModel.RedditViewModelFactory
 import com.squareup.picasso.Picasso
@@ -40,26 +42,40 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.currentItem.observe(requireActivity(), {item ->
-            binding.userName = item.data.author
-            binding.title = item.data.title
-            binding.comments =
-                String.format(Locale.getDefault(), "%s comments", item.data.num_comments)
-
-            binding.timeAgo = DateUtils.getRelativeDateTimeString(
-                binding.timeAgoField.context,
-                item.data.created.toLong() * 1000,
-                DateUtils.HOUR_IN_MILLIS,
-                DateUtils.DAY_IN_MILLIS,
-                0
-            ).toString()
-
-            val image = item.getThumbnail()
-            if (image != null) {
-                Picasso.get().load(image).into(binding.previewImage);
-                binding.previewImage.visibility = View.VISIBLE
+            if (item == null) {
+                hideDetails()
             } else {
-                binding.previewImage.visibility = View.GONE
+                showDetails(item)
             }
         })
+    }
+
+    private fun hideDetails() {
+        binding.root.visibility = View.GONE
+    }
+
+    private fun showDetails(item: TopEntry) {
+        binding.userName = item.author
+        binding.title = item.title
+        binding.comments =
+            String.format(Locale.getDefault(), "%s comments", item.comments)
+
+        binding.timeAgo = DateUtils.getRelativeDateTimeString(
+            binding.timeAgoField.context,
+            item.created * 1000,
+            DateUtils.HOUR_IN_MILLIS,
+            DateUtils.DAY_IN_MILLIS,
+            0
+        ).toString()
+
+        val image = item.imageUrl
+        if (image != null) {
+            Picasso.get().load(image).into(binding.previewImage);
+            binding.previewImage.visibility = View.VISIBLE
+        } else {
+            binding.previewImage.visibility = View.GONE
+        }
+
+        binding.root.visibility = View.VISIBLE
     }
 }

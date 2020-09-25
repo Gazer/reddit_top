@@ -19,7 +19,7 @@ interface RedditAPI {
             .baseUrl(BASE_URL)
             .client(OkHttpClient.Builder().also { client ->
                 val logging = HttpLoggingInterceptor()
-                logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+                logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
                 client.addInterceptor(logging)
             }.build())
             .addConverterFactory(MoshiConverterFactory.create())

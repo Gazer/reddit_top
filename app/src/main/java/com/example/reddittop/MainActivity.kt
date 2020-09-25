@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reddittop.adapters.TopAdapter
 import com.example.reddittop.adapters.TopLoadStateAdapter
+import com.example.reddittop.dao.TopEntry
 import com.example.reddittop.databinding.ActivityMainBinding
 import com.example.reddittop.models.Children
 import com.example.reddittop.viewModel.RedditViewModel
@@ -87,6 +88,9 @@ class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
         viewModel.currentItem.observe(this, {
             binding.drawer?.closeDrawers()
         })
+        viewModel.itemRemoved.observe(this, {
+            topAdapter.notifyItemRemoved(it)
+        })
     }
 
     private fun initRecyclerView() {
@@ -97,7 +101,11 @@ class MainActivity : AppCompatActivity(), TopAdapter.ItemClicked {
         )
     }
 
-    override fun onItemClicked(item: Children) {
+    override fun onItemClicked(item: TopEntry) {
         viewModel.showItem(item)
+    }
+
+    override fun onItemDismissed(item: TopEntry) {
+        viewModel.dismissItem(item)
     }
 }

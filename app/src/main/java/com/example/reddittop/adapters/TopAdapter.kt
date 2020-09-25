@@ -7,37 +7,42 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.reddittop.dao.TopEntry
 import com.example.reddittop.databinding.ItemEntryBinding
 import com.example.reddittop.models.Children
 import com.squareup.picasso.Picasso
 import java.util.*
 
 class TopAdapter(private val itemClicked: ItemClicked) :
-    PagingDataAdapter<Children, TopAdapter.ItemViewHolder>(ItemComparator) {
+    PagingDataAdapter<TopEntry, TopAdapter.ItemViewHolder>(ItemComparator) {
     interface ItemClicked {
-        fun onItemClicked(item: Children)
+        fun onItemClicked(item: TopEntry)
+        fun onItemDismissed(item: TopEntry)
     }
 
     inner class ItemViewHolder(private val binding: ItemEntryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Children) {
+        fun bind(item: TopEntry) {
             binding.root.setOnClickListener {
                 itemClicked.onItemClicked(item)
             }
-            binding.userName = item.data.author
-            binding.title = item.data.title
+            binding.dismiss.setOnClickListener {
+                itemClicked.onItemDismissed(item)
+            }
+            binding.userName = item.author
+            binding.title = item.title
             binding.comments =
-                String.format(Locale.getDefault(), "%s comments", item.data.num_comments)
+                String.format(Locale.getDefault(), "%s comments", item.comments)
 
             binding.timeAgo = DateUtils.getRelativeDateTimeString(
                 binding.timeAgoField.context,
-                item.data.created.toLong() * 1000,
+                item.created.toLong() * 1000,
                 DateUtils.HOUR_IN_MILLIS,
                 DateUtils.DAY_IN_MILLIS,
                 0
             ).toString()
 
-            val image = item.getThumbnail()
+            val image = item.imageUrl
             if (image != null) {
                 Picasso.get().load(image).into(binding.previewImage);
                 binding.previewImage.visibility = View.VISIBLE
@@ -62,12 +67,12 @@ class TopAdapter(private val itemClicked: ItemClicked) :
         }
     }
 
-    object ItemComparator : DiffUtil.ItemCallback<Children>() {
-        override fun areItemsTheSame(oldItem: Children, newItem: Children): Boolean {
-            return oldItem.data.id == newItem.data.id
+    object ItemComparator : DiffUtil.ItemCallback<TopEntry>() {
+        override fun areItemsTheSame(oldItem: TopEntry, newItem: TopEntry): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Children, newItem: Children): Boolean {
+        override fun areContentsTheSame(oldItem: TopEntry, newItem: TopEntry): Boolean {
             return oldItem == newItem
         }
     }

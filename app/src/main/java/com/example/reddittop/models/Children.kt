@@ -3,7 +3,8 @@ package com.example.reddittop.models
 
 data class Children(
     val `data`: DataX,
-    val kind: String
+    val kind: String,
+    val deleted: Boolean
 ) {
     // This can be improved, just checking for some edge cases I found
     fun getThumbnail(): String? = when {
