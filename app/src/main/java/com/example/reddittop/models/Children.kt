@@ -10,7 +10,7 @@ data class Children(
         data.thumbnail.isBlank() -> null
         data.thumbnail == "self" -> null
         data.media != null -> data.thumbnail
-        !data.url.endsWith(".jpg") || !data.url.endsWith(".png") -> data.thumbnail
+        !data.url.endsWith(".jpg") && !data.url.endsWith(".png") -> data.thumbnail
         else -> data.url
     }
 }
