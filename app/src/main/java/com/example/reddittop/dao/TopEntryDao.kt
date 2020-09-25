@@ -15,6 +15,9 @@ interface TopEntryDao {
     @Delete
     suspend fun delete(entry: TopEntry)
 
+    @Query("UPDATE top_entries SET pending=0 WHERE id=:id")
+    suspend fun markAsReaded(id: String): Int
+
     @Query("DELETE FROM top_entries")
     suspend fun clearAll(): Int
 }

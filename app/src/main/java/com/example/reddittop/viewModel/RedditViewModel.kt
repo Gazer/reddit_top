@@ -31,6 +31,9 @@ class RedditViewModel(private val database: AppDatabase) : ViewModel() {
 
     fun showItem(item: TopEntry) {
         _currentItem.postValue(item)
+        viewModelScope.launch(Dispatchers.IO) {
+            database.topEntriesDao().markAsReaded(item.id)
+        }
     }
 
     fun dismissItem(item: TopEntry) {

@@ -33,7 +33,11 @@ class TopAdapter(private val itemClicked: ItemClicked) :
             binding.title = item.title
             binding.comments =
                 String.format(Locale.getDefault(), "%s comments", item.comments)
-
+            binding.pending.visibility = if (item.pending) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
             binding.timeAgo = DateUtils.getRelativeDateTimeString(
                 binding.timeAgoField.context,
                 item.created.toLong() * 1000,
