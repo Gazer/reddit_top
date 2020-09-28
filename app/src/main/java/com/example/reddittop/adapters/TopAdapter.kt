@@ -2,19 +2,19 @@ package com.example.reddittop.adapters
 
 import android.text.format.DateUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reddittop.dao.TopEntry
 import com.example.reddittop.databinding.ItemEntryBinding
-import com.example.reddittop.models.Children
+import com.example.reddittop.extensions.visible
 import com.squareup.picasso.Picasso
 import java.util.*
 
 class TopAdapter(private val itemClicked: ItemClicked) :
     PagingDataAdapter<TopEntry, TopAdapter.ItemViewHolder>(ItemComparator) {
+
     interface ItemClicked {
         fun onItemClicked(item: TopEntry)
         fun onItemDismissed(item: TopEntry)
@@ -22,36 +22,34 @@ class TopAdapter(private val itemClicked: ItemClicked) :
 
     inner class ItemViewHolder(private val binding: ItemEntryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: TopEntry) {
-            binding.root.setOnClickListener {
+        fun bind(item: TopEntry) = with(binding) {
+            root.setOnClickListener {
                 itemClicked.onItemClicked(item)
             }
-            binding.dismiss.setOnClickListener {
+            dismiss.setOnClickListener {
                 itemClicked.onItemDismissed(item)
             }
-            binding.userName = item.author
-            binding.title = item.title
-            binding.comments =
+
+            userName = item.author
+            title = item.title
+            comments =
                 String.format(Locale.getDefault(), "%s comments", item.comments)
-            binding.pending.visibility = if (item.pending) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-            binding.timeAgo = DateUtils.getRelativeDateTimeString(
-                binding.timeAgoField.context,
+            timeAgo = DateUtils.getRelativeDateTimeString(
+                timeAgoField.context,
                 item.created.toLong() * 1000,
                 DateUtils.HOUR_IN_MILLIS,
                 DateUtils.DAY_IN_MILLIS,
                 0
             ).toString()
 
+            pendingView.visible(item.pending)
+
             val image = item.imageUrl
             if (image != null) {
-                Picasso.get().load(image).into(binding.previewImage);
-                binding.previewImage.visibility = View.VISIBLE
+                Picasso.get().load(image).into(previewImage);
+                previewImage.visible(true)
             } else {
-                binding.previewImage.visibility = View.GONE
+                previewImage.visible(false)
             }
         }
     }

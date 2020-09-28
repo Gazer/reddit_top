@@ -7,10 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reddittop.databinding.ItemLoadingStateBinding
-
-fun View.visible(isVisible: Boolean) {
-    visibility = if (isVisible) View.VISIBLE else View.GONE
-}
+import com.example.reddittop.extensions.visible
 
 class TopLoadStateAdapter(
     private val retry: () -> Unit
