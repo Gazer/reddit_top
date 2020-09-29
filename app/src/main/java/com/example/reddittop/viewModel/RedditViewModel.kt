@@ -9,12 +9,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.reddittop.dao.AppDatabase
 import com.example.reddittop.dao.TopEntry
-import com.example.reddittop.networking.RedditAPI
 import com.example.reddittop.networking.TopEntriesMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RedditViewModel(private val database: AppDatabase) : ViewModel() {
+class RedditViewModel(
+    private val database: AppDatabase,
+    topEntriesMediator: TopEntriesMediator
+) : ViewModel() {
     private val _currentItem = MutableLiveData<TopEntry>()
     val currentItem = _currentItem as LiveData<TopEntry>
 
@@ -55,7 +57,7 @@ class RedditViewModel(private val database: AppDatabase) : ViewModel() {
 
     val topEntries = Pager(
         PagingConfig(pageSize = 10),
-        remoteMediator = TopEntriesMediator(RedditAPI.invoke(), database)
+        remoteMediator = topEntriesMediator
     ) {
         database.topEntriesDao().pagingSource()
     }.flow.cachedIn(viewModelScope)

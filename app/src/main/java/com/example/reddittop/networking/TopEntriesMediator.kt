@@ -10,10 +10,15 @@ import com.example.reddittop.dao.RemoteKeys
 import com.example.reddittop.dao.TopEntry
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class TopEntriesMediator(private val api: RedditAPI, private val database: AppDatabase) :
+class TopEntriesMediator @Inject constructor(
+    private val api: RedditAPI,
+    private val database: AppDatabase
+) :
     RemoteMediator<Int, TopEntry>() {
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, TopEntry>
