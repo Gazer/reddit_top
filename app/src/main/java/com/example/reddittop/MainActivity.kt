@@ -70,6 +70,4 @@ class MainActivity : AppCompatActivity() {
             binding.drawer?.closeDrawers()
         })
     }
-
-
 }

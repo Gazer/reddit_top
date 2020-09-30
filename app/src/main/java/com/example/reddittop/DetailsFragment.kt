@@ -62,14 +62,14 @@ class DetailsFragment : Fragment() {
         binding.container.visibility = View.GONE
     }
 
-    private fun showDetails(item: TopEntry) {
-        binding.userName = item.author
-        binding.title = item.title
-        binding.comments =
+    private fun showDetails(item: TopEntry) = with(binding) {
+        userName = item.author
+        title = item.title
+        comments =
             String.format(Locale.getDefault(), "%s comments", item.comments)
 
-        binding.timeAgo = DateUtils.getRelativeDateTimeString(
-            binding.timeAgoField.context,
+        timeAgo = DateUtils.getRelativeDateTimeString(
+            timeAgoField.context,
             item.created * 1000,
             DateUtils.HOUR_IN_MILLIS,
             DateUtils.DAY_IN_MILLIS,
@@ -78,24 +78,24 @@ class DetailsFragment : Fragment() {
 
         val image = item.imageUrl
         if (image != null) {
-            Picasso.get().load(image).into(binding.previewImage)
-            binding.previewImage.setOnLongClickListener {
+            Picasso.get().load(image).into(previewImage)
+            previewImage.setOnLongClickListener {
                 saveImage(item.id)
                 true
             }
-            binding.previewImage.visibility = View.VISIBLE
+            previewImage.visibility = View.VISIBLE
         } else {
-            binding.previewImage.visibility = View.GONE
+            previewImage.visibility = View.GONE
         }
 
-        binding.open.setOnClickListener {
+        open.setOnClickListener {
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(item.url)
             startActivity(i)
         }
 
-        binding.scrollable.scrollTo(0, 0)
-        binding.container.visibility = View.VISIBLE
+        scrollable.scrollTo(0, 0)
+        container.visibility = View.VISIBLE
     }
 
     private fun saveImage(id: String) {
