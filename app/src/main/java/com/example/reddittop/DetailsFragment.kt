@@ -89,9 +89,11 @@ class DetailsFragment : Fragment() {
         }
 
         open.setOnClickListener {
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(item.url)
-            startActivity(i)
+            Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(item.url)
+            }.run {
+                startActivity(this)
+            }
         }
 
         scrollable.scrollTo(0, 0)
@@ -100,11 +102,11 @@ class DetailsFragment : Fragment() {
 
     private fun saveImage(id: String) {
         // Quick & Dirty save
-        binding.previewImage.setDrawingCacheEnabled(true)
+        binding.previewImage.isDrawingCacheEnabled = true
         val bitmap: Bitmap = binding.previewImage.getDrawingCache()
 
         addImageToGallery("reddit_$id.jpg", bitmap)
-        binding.previewImage.setDrawingCacheEnabled(false)
+        binding.previewImage.isDrawingCacheEnabled = false
 
         Toast.makeText(requireContext(), "Image saved", Toast.LENGTH_SHORT).show()
     }
@@ -124,12 +126,10 @@ class DetailsFragment : Fragment() {
         )
         uri?.let {
             requireActivity().contentResolver.openOutputStream(uri)?.let { stream ->
-                val oStream =
-                    BufferedOutputStream(stream)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, oStream)
-                oStream.close()
+                val outputStream = BufferedOutputStream(stream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                outputStream.close()
             }
         }
-
     }
 }
